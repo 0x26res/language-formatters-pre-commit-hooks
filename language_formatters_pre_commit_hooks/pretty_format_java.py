@@ -32,7 +32,10 @@ def _download_google_java_formatter_jar(version: str) -> str:  # pragma: no cove
     try:
         for url_to_download in possible_urls:
             try:
-                return download_url(url_to_download, "google-java-formatter{version}.jar".format(version=version))
+                return download_url(
+                    url_to_download,
+                    "google-java-formatter{version}.jar".format(version=version),
+                )
             except requests.HTTPError as e:
                 if e.response.status_code != 404:
                     # If the url was not found then move forward with the next links

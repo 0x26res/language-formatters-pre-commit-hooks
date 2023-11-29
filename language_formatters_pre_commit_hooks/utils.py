@@ -25,7 +25,9 @@ def run_command(*command: str) -> typing.Tuple[int, str, str]:
     stderr = result.stderr.decode("utf-8")
 
     print(
-        "[return_code={return_code}] | {output}\n\tstderr: {err}".format(return_code=return_code, output=stdout, err=stderr),
+        "[return_code={return_code}] | {output}\n\tstderr: {err}".format(
+            return_code=return_code, output=stdout, err=stderr
+        ),
         file=sys.stderr,
     )
     return return_code, stdout, stderr
@@ -61,15 +63,21 @@ def download_url(url: str, file_name: typing.Optional[str] = None) -> str:
         # via `pre-commit` as it would ensure that the directories
         # are present
         print(
-            "Unexisting base directory ({base_directory}). Creating it".format(base_directory=base_directory),
+            "Unexisting base directory ({base_directory}). Creating it".format(
+                base_directory=base_directory
+            ),
             file=sys.stderr,
         )
         os.makedirs(base_directory)
 
     print("Downloading {url}".format(url=url), file=sys.stderr)
-    r = requests.get(url, stream=True)  # nosec B113/request_without_timeout: intentional to avoid issues on slow connections
+    r = requests.get(
+        url, stream=True
+    )  # nosec B113/request_without_timeout: intentional to avoid issues on slow connections
     r.raise_for_status()
-    with tempfile.NamedTemporaryFile(dir=base_directory, delete=False) as tmp_file:  # Not delete because we're renaming it
+    with tempfile.NamedTemporaryFile(
+        dir=base_directory, delete=False
+    ) as tmp_file:  # Not delete because we're renaming it
         tmp_file_name = tmp_file.name
         shutil.copyfileobj(r.raw, tmp_file)
         tmp_file.flush()

@@ -42,4 +42,9 @@ def test_pretty_format_rust(undecorate_method, filename, expected_retval):
 
 def test_pretty_format_rust_autofix(tmpdir, undecorate_method):
     copyfile("not-pretty-formatted/Cargo.toml", tmpdir.join("Cargo.toml").strpath)
-    run_autofix_test(tmpdir, undecorate_method, "not-pretty-formatted/src/main.rs", "not-pretty-formatted_fixed/src/main.rs")
+    run_autofix_test(
+        tmpdir,
+        undecorate_method,
+        "not-pretty-formatted/src/main.rs",
+        "not-pretty-formatted_fixed/src/main.rs",
+    )

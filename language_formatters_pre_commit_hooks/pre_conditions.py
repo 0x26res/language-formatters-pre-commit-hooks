@@ -38,7 +38,9 @@ class _ToolRequired:
     def __init__(
         self,
         tool_name: str,
-        check_command: typing.Callable[[typing.Optional[typing.Mapping[str, typing.Any]]], bool],
+        check_command: typing.Callable[
+            [typing.Optional[typing.Mapping[str, typing.Any]]], bool
+        ],
         download_install_url: str,
         extras: typing.Optional[typing.Mapping[str, typing.Any]] = None,
     ) -> None:
@@ -100,7 +102,11 @@ def get_jdk_version() -> Version:
     """
     _, _, stderr = run_command("java", "-XshowSettings:properties", "-version")
     try:
-        java_property_line = next(line for line in stderr.splitlines() if re.match(r"^\s+java.version\s+=\s+[^s]+$", line))
+        java_property_line = next(
+            line
+            for line in stderr.splitlines()
+            if re.match(r"^\s+java.version\s+=\s+[^s]+$", line)
+        )
         return Version(java_property_line.split()[-1])
     except Exception as e:
         raise UnableToVerifyJDKVersion() from e
@@ -117,7 +123,9 @@ def assert_min_jdk_version(version: Version) -> None:
     """
     _ToolRequired(
         tool_name=f"JRE: min version {version}",
-        check_command=lambda extras: bool(extras and get_jdk_version() >= extras["min_sdk"]),
+        check_command=lambda extras: bool(
+            extras and get_jdk_version() >= extras["min_sdk"]
+        ),
         download_install_url="https://www.java.com/en/download/",
         extras={"min_sdk": version},
     ).assert_tool_installed()
@@ -144,7 +152,12 @@ def assert_max_jdk_version(version: Version, *, inclusive: bool = False) -> None
     _ToolRequired(
         tool_name=tool_name,
         check_command=lambda extras: bool(
-            extras and (get_jdk_version() <= extras["max_sdk"] if inclusive else get_jdk_version() < extras["max_sdk"])
+            extras
+            and (
+                get_jdk_version() <= extras["max_sdk"]
+                if inclusive
+                else get_jdk_version() < extras["max_sdk"]
+            )
         ),
         download_install_url="https://www.java.com/en/download/",
         extras={"max_sdk": version},

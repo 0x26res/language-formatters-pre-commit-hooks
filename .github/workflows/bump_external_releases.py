@@ -13,13 +13,17 @@ if sys.version_info < (3, 6):
 
 def bump_release(github_project, tool_name):
     try:
-        with urlopen(f"https://api.github.com/repos/{github_project}/releases/latest") as request:  # nosec: disable=B310
+        with urlopen(
+            f"https://api.github.com/repos/{github_project}/releases/latest"
+        ) as request:  # nosec: disable=B310
             latest_version = json.load(request)["name"].lstrip("v")
     except:  # noqa: E722 (allow usage of bare 'except')
         traceback.print_exc()
         return False
 
-    tool_name_version_path = Path("language_formatters_pre_commit_hooks") / f"{tool_name}.version"
+    tool_name_version_path = (
+        Path("language_formatters_pre_commit_hooks") / f"{tool_name}.version"
+    )
     with tool_name_version_path.open(mode="r") as f:
         default_version = f.readline().split()[0]
 
@@ -35,9 +39,14 @@ def bump_release(github_project, tool_name):
     def call(*args):
         print(f"Executing: {args}")
         try:
-            subprocess.check_call(args=args, stdout=subprocess.PIPE)  # nosec: disable=B603
+            subprocess.check_call(
+                args=args, stdout=subprocess.PIPE
+            )  # nosec: disable=B603
         except subprocess.CalledProcessError as e:
-            print(f"Failed to run {args}\nstdout: {e.stdout}\nstderr: {e.stderr}", file=sys.stderr)
+            print(
+                f"Failed to run {args}\nstdout: {e.stdout}\nstderr: {e.stderr}",
+                file=sys.stderr,
+            )
             raise
 
     call("pre-commit", "run", "--file", str(tool_name_version_path.absolute()))

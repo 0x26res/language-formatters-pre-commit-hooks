@@ -19,7 +19,9 @@ def _download_kotlin_formatter_jar(version: str) -> str:  # pragma: no cover
 
     url_to_download = get_url(version)
     try:
-        return download_url(get_url(version), "ktlint{version}.jar".format(version=version))
+        return download_url(
+            get_url(version), "ktlint{version}.jar".format(version=version)
+        )
     except:  # noqa: E722 (allow usage of bare 'except')
         raise RuntimeError(
             "Failed to download {url}. Probably the requested version, {version}, is "
@@ -106,7 +108,9 @@ def pretty_format_kotlin(argv: typing.Optional[typing.List[str]] = None) -> int:
         status = 1
         print(
             "{}: {}".format(
-                "The following files have been fixed by ktlint" if args.autofix else "The following files are not properly formatted",
+                "The following files have been fixed by ktlint"
+                if args.autofix
+                else "The following files are not properly formatted",
                 ", ".join(sorted(not_pretty_formatted_files)),
             ),
         )

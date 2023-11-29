@@ -27,7 +27,12 @@ def undecorate_function(func: F) -> typing.Generator[F, None, None]:
 
 
 class UnexpectedStatusCode(Exception):
-    def __init__(self, parameters: typing.List[str], expected_status_code: int, actual_status_code: int) -> None:
+    def __init__(
+        self,
+        parameters: typing.List[str],
+        expected_status_code: int,
+        actual_status_code: int,
+    ) -> None:
         super().__init__()
         self.parameters = parameters
         self.expected_status_code = expected_status_code
@@ -48,23 +53,37 @@ def run_autofix_test(
     formatted_path: str,
 ) -> None:
     tmpdir.mkdir("src")
-    not_pretty_formatted_tmp_path = tmpdir.join("src").join(basename(not_pretty_formatted_path))
+    not_pretty_formatted_tmp_path = tmpdir.join("src").join(
+        basename(not_pretty_formatted_path)
+    )
 
     # It is a relative paths as KTLint==0.41.0 dropped support for absolute paths
-    not_pretty_formatted_tmp_strpath = str(tmpdir.bestrelpath(not_pretty_formatted_tmp_path))
+    not_pretty_formatted_tmp_strpath = str(
+        tmpdir.bestrelpath(not_pretty_formatted_tmp_path)
+    )
 
     copyfile(not_pretty_formatted_path, not_pretty_formatted_tmp_path)
     with change_dir_context(tmpdir.strpath):
         parameters = ["--autofix", not_pretty_formatted_tmp_strpath]
         status_code = method(parameters)
         if status_code != 1:
-            raise UnexpectedStatusCode(parameters=parameters, expected_status_code=1, actual_status_code=status_code)
+            raise UnexpectedStatusCode(
+                parameters=parameters,
+                expected_status_code=1,
+                actual_status_code=status_code,
+            )
 
     # file was formatted (shouldn't trigger linter again)
     with change_dir_context(tmpdir.strpath):
         parameters = ["--autofix", not_pretty_formatted_tmp_strpath]
         status_code = method(parameters)
         if status_code != 0:
-            raise UnexpectedStatusCode(parameters=parameters, expected_status_code=0, actual_status_code=status_code)
+            raise UnexpectedStatusCode(
+                parameters=parameters,
+                expected_status_code=0,
+                actual_status_code=status_code,
+            )
 
-    assert not_pretty_formatted_tmp_path.read_text("utf-8") == py.path.local(formatted_path).read_text("utf-8")
+    assert not_pretty_formatted_tmp_path.read_text("utf-8") == py.path.local(
+        formatted_path
+    ).read_text("utf-8")
